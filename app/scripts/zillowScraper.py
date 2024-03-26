@@ -1,11 +1,6 @@
 from bs4 import BeautifulSoup
 import requests
 
-from time import sleep
-
-
-
-
 def scrapeZillowListing(url):
     # Start a session to keep cookies and headers consistent across requests
     session = requests.Session()
@@ -17,8 +12,9 @@ def scrapeZillowListing(url):
     }
 
     response = session.get(url, headers=headers)
-
-    if response.status_code == 200:
+    try:
+        if not response.status_code == 200:
+              raise ValueError("Unsuccessful webscrape")
         data = {}
         # parsing
         html = response.text
@@ -47,9 +43,7 @@ def scrapeZillowListing(url):
             data[values[1]] = values[0]
         print(data)
         return data
-    else:
-            print(f'Failed to retrieve the page: status code {response.status_code}')
+    except Exception as e:
+            raise Exception(f"Failed to webscrape {url}.")
 
-
-scrapeZillowListing('https://www.zillow.com/homedetails/1438-E-43rd-St-Los-Angeles-CA-90011/20620349_zpid/')
 
